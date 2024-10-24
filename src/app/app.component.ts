@@ -23,35 +23,34 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.bees.set(this.localStorageService.getBees());
     this.targetBee = this.localStorageService.getTargetBee();
-
     this.getBees();
   }
 
-  hitBee(): void {
+  onHitButtonClick() {
     const randomIndex = Math.floor(Math.random() * this.bees().length);
     this.targetBee = this.bees()[randomIndex];
+    this.hitBee(this.targetBee);
+    this.bees.set([...this.bees()]);
+    this.localStorageService.setTargetBee(this.targetBee);
+    this.localStorageService.setBees(this.bees());
+  }
 
-    this.targetBee.health -= this.targetBee.damage;
+  onRestartButtonClick() {
+    this.getBees();
+    this.targetBee = undefined;
+  }
 
-    if (this.targetBee.health <= 0) {
-      this.bees().splice(randomIndex, 1);
+  private hitBee(bee: Bee): void {
+    bee.health -= bee.damage;
+    if (bee.health <= 0) {
+      const index = this.bees().findIndex((item) => item === bee);
+      this.bees().splice(index, 1);
     }
 
     const queenBee = this.bees().find((bee) => bee.type === BeeType.Queen);
-
     if (!queenBee) {
       this.killAllBees();
     }
-
-    this.bees.set([...this.bees()]);
-
-    this.localStorageService.setBees(this.bees());
-    this.localStorageService.setTargetBee(this.targetBee);
-  }
-
-  restart() {
-    this.getBees();
-    this.targetBee = undefined;
   }
 
   private getBees() {

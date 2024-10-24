@@ -1,4 +1,11 @@
 <div class="bee">
-  <img [src]="imageUrl" alt="{{ type }} Bee" />
-  <p>{{ type }} Bee - {{ health }} HP</p>
+  <!-- Bee image -->
+  @if (imageUrl) {
+  <img data-testid="bee-image" [src]="imageUrl" alt="{{ type }} Bee" />
+  }
+
+  <!-- Bee stats -->
+  @if(type && health){
+  <p data-testid="bee-stats">{{ type }} Bee - {{ health }} HP</p>
+  }
 </div>
