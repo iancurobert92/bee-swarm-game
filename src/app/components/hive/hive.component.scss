@@ -1,0 +1,13 @@
+.hive {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.hive-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}

@@ -1,0 +1,9 @@
+<div class="hive">
+  @for (beeGroup of beeGroups; track $index) {
+  <div class="hive-row">
+    @for (bee of beeGroup; track $index) {
+    <app-bee [type]="bee.type" [health]="bee.health"></app-bee>
+    }
+  </div>
+  }
+</div>
