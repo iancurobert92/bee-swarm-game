@@ -1,23 +1,6 @@
-.game-board {
-  text-align: center;
+.form-container {
+  display: flex;
+  min-width: 100%;
+  justify-content: center;
   padding: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  margin: 20px 0;
-  cursor: pointer;
-}
-
-input {
-  margin-bottom: 20px;
-  padding: 5px;
-}
-
-.message-container {
-  padding: 4rem 0;
-}
-
-.info-text {
-  color: blue;
 }

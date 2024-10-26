@@ -14,4 +14,8 @@ export class Utils {
       return acc;
     }, {} as { [key: string]: T[] });
   }
+
+  getRamdomItem<T>(items: T[]) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
 }

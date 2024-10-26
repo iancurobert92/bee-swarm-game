@@ -20,4 +20,12 @@ export class LocalStorageService {
   setTargetBee(value: Bee) {
     window.localStorage.setItem('targetBee', JSON.stringify(value));
   }
+
+  getPlayerName(): string {
+    return JSON.parse(window.localStorage.getItem('playerName') ?? '""');
+  }
+
+  setPlayerName(value: string) {
+    window.localStorage.setItem('playerName', JSON.stringify(value));
+  }
 }

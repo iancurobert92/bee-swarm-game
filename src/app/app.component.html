@@ -1,25 +1,11 @@
-<div class="game-board">
-  <h4 data-testid="player-details">
-    Player name: <span class="info-text">{{ playerName }}</span>
-  </h4>
-  <button data-testid="hit-button" [disabled]="!bees().length" (click)="onHitButtonClick()">Hit Bee</button>
-
-  <div>
-    <div data-testid="target-bee-type">
-      Target Bee Type: <span class="info-text">@if (targetBee) { {{ targetBee.type }}} @else {N/A}</span>
-    </div>
-    <div data-testid="target-bee-damage">
-      Damage: <span class="info-text">@if (targetBee) { {{ targetBee.damage }}} @else {N/A}</span>
-    </div>
-  </div>
-
-  @if (bees().length) {
-  <app-hive [bees]="bees()"></app-hive>
-  }@else {
-  <div data-testid="game-over-message" class="message-container">
-    <div>Game Over!</div>
-    <button data-testid="restart-button" (click)="onRestartButtonClick()">Restart</button>
-  </div>
-
-  }
+@if (isLoggedIn) {
+<app-game-board></app-game-board>
+} @else {
+<div class="form-container">
+  <form #playerNameForm="ngForm" (ngSubmit)="onSubmit()">
+    <label for="playerName">Player Name:</label><br />
+    <input type="text" name="playerName" id="playerName" [(ngModel)]="playerName" required minlength="3" />
+    <button [disabled]="!playerNameForm.valid">Submit</button>
+  </form>
 </div>
+}

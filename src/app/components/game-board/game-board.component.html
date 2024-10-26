@@ -1,0 +1,27 @@
+<div class="game-board">
+  <h4 data-testid="player-details">
+    Player name: <span class="info-text">{{ playerNameSignal() }}</span>
+  </h4>
+  <button data-testid="hit-button" [disabled]="!beesSignal().length" (click)="onHitButtonClick()">Hit Bee</button>
+
+  <div>
+    <div data-testid="target-bee-type">
+      Target Bee Type:
+      <span class="info-text"> @if (targetBeeSignal()?.type) { {{ targetBeeSignal()?.type }}} @else {N/A}</span>
+    </div>
+    <div data-testid="target-bee-damage">
+      Damage:
+      <span class="info-text">@if (targetBeeSignal()?.damage) { {{ targetBeeSignal()?.damage }}} @else {N/A}</span>
+    </div>
+  </div>
+
+  @if (beesSignal().length) {
+  <app-hive [bees]="beesSignal()"></app-hive>
+  }@else {
+  <div data-testid="game-over-message" class="message-container">
+    <div>Game Over!</div>
+    <button data-testid="restart-button" (click)="onRestartButtonClick()">Restart</button>
+  </div>
+
+  }
+</div>
