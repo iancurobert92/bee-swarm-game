@@ -14,8 +14,8 @@ export class GameBoardService {
   private localStorageService = inject(LocalStorageService);
   private utils = inject(Utils);
 
-  private _beesSignal = signal<Bee[]>([]);
-  get beesSignal(): Signal<Bee[]> {
+  private _beesSignal = signal<Bee[] | undefined>(undefined);
+  get beesSignal(): Signal<Bee[] | undefined> {
     return this._beesSignal;
   }
 
@@ -36,11 +36,16 @@ export class GameBoardService {
   }
 
   getData() {
-    if (this._beesSignal().length) {
+    if (this._beesSignal()) {
       return of(this._beesSignal());
     }
 
-    return this.beesService.getBees().pipe(tap(this._beesSignal.set));
+    return this.beesService.getBees().pipe(
+      tap((bees) => {
+        this._beesSignal.set(bees);
+        this.localStorageService.setBees(bees);
+      })
+    );
   }
 
   setPlayerName(value: string) {
@@ -49,7 +54,10 @@ export class GameBoardService {
   }
 
   hitRandomBee() {
-    const targetBee = this.utils.getRamdomItem(this._beesSignal());
+    const bees = this._beesSignal();
+    if (!bees) return;
+
+    const targetBee = this.utils.getRandomItem(bees);
     this._targetBeeSignal.set(targetBee);
     this.localStorageService.setTargetBee(targetBee);
 
@@ -60,26 +68,32 @@ export class GameBoardService {
 
   resetBoard() {
     this._targetBeeSignal.set(undefined);
+    this._beesSignal.set(undefined);
     return this.getData();
   }
 
   private hitBee(bee: Bee): Bee[] {
     bee.health -= bee.damage;
+    const bees = this._beesSignal() ?? [];
     if (bee.health <= 0) {
-      const index = this._beesSignal().findIndex((item) => item === bee);
-      this._beesSignal().splice(index, 1);
+      const index = bees.findIndex((item) => item === bee);
+      bees.splice(index, 1);
     }
 
-    const queenBee = this._beesSignal().find((bee) => bee.type === BeeType.Queen);
+    const queenBee = bees.find((bee) => bee.type === BeeType.Queen);
+
     if (!queenBee) {
-      this.killAllBees();
+      return this.killAllBees();
     }
 
-    return [...this._beesSignal()];
+    return [...bees];
   }
 
   private killAllBees() {
     this._beesSignal.set([]);
     this._targetBeeSignal.set(undefined);
+    this.localStorageService.setTargetBee(undefined);
+
+    return [];
   }
 }

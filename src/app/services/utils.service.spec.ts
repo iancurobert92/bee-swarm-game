@@ -35,7 +35,7 @@ describe('UtilsService', () => {
   });
 
   it('should return a random item', () => {
-    const result = service.getRamdomItem(items);
+    const result = service.getRandomItem(items);
 
     expect(items.some((item) => result === item)).toBeTrue();
   });
