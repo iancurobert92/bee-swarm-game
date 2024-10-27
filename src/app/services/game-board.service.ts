@@ -36,8 +36,8 @@ export class GameBoardService {
   }
 
   getData() {
-    if (this._beesSignal()) {
-      return of(this._beesSignal());
+    if (this.beesSignal()) {
+      return of(this.beesSignal());
     }
 
     return this.beesService.getBees().pipe(
