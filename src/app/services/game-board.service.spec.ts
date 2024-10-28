@@ -26,15 +26,19 @@ describe('GameBoardService', () => {
     setPlayerName: () => {},
   });
 
+  const utilsMock = MockService(Utils);
+
   beforeEach(async () => {
     spyOn(beesServiceMock, 'getBees').and.callThrough();
     spyOn(localStorageServiceMock, 'setBees').and.callThrough();
+    spyOn(localStorageServiceMock, 'setTargetBee').and.callThrough();
     spyOn(localStorageServiceMock, 'setPlayerName').and.callThrough();
+    spyOn(utilsMock, 'getRandomItem').and.returnValue(bees[0]);
 
     await MockBuilder(GameBoardService)
       .mock(LocalStorageService, localStorageServiceMock)
       .mock(BeesService, beesServiceMock)
-      .mock(Utils);
+      .mock(Utils, utilsMock);
 
     service = TestBed.inject(GameBoardService);
   });
@@ -62,14 +66,14 @@ describe('GameBoardService', () => {
       });
     });
 
-    it('should should save bees to local storage', (done) => {
+    it('should save bees to local storage', (done) => {
       service.getData().subscribe(() => {
         expect(localStorageServiceMock.setBees).toHaveBeenCalled();
         done();
       });
     });
 
-    it('should should set beesSignal value', (done) => {
+    it('should set beesSignal value', (done) => {
       service.getData().subscribe((result) => {
         expect(service.beesSignal()).toBe(result);
         done();
@@ -90,6 +94,66 @@ describe('GameBoardService', () => {
       service.setPlayerName(playerName);
 
       expect(localStorageServiceMock.setPlayerName).toHaveBeenCalledWith(playerName);
+    });
+  });
+
+  describe('hitRandomBee', () => {
+    it('should stop execution if the bees list is empty or undefined', () => {
+      spyOnProperty(service, 'beesSignal', 'get').and.returnValue(signal([]));
+
+      service.hitRandomBee();
+
+      expect(utilsMock.getRandomItem).not.toHaveBeenCalled();
+    });
+
+    it('should set target bee', () => {
+      spyOnProperty(service, 'beesSignal', 'get').and.returnValue(signal(bees));
+
+      service.hitRandomBee();
+
+      expect(utilsMock.getRandomItem).toHaveBeenCalledWith(bees);
+    });
+
+    it('should save target bee to local storage', () => {
+      spyOnProperty(service, 'beesSignal', 'get').and.returnValue(signal(bees));
+
+      service.hitRandomBee();
+
+      expect(localStorageServiceMock.setTargetBee).toHaveBeenCalledWith(bees[0]);
+    });
+
+    it('should hit the target bee', () => {
+      spyOnProperty(service, 'beesSignal', 'get').and.returnValue(signal(bees));
+      spyOnProperty(service, 'targetBeeSignal', 'get').and.returnValue(signal(bees[0]));
+
+      const initialHealth = bees[0].health;
+
+      service.hitRandomBee();
+
+      const finalHealth = service.targetBeeSignal()?.health;
+
+      expect(finalHealth).toBeLessThan(initialHealth);
+    });
+
+    it('should save the updated bees in local storage', () => {
+      spyOnProperty(service, 'beesSignal', 'get').and.returnValue(signal(bees));
+
+      service.hitRandomBee();
+
+      expect(localStorageServiceMock.setBees).toHaveBeenCalled();
+    });
+  });
+
+  describe('resetBoard', () => {
+    it('should reinitialize data', (done) => {
+      spyOn(service, 'getData').and.returnValue(of(bees));
+
+      service.resetBoard().subscribe((result) => {
+        expect(service.beesSignal()).toBe(undefined);
+        expect(service.targetBeeSignal()).toBe(undefined);
+        expect(result).toEqual(bees);
+        done();
+      });
     });
   });
 });
