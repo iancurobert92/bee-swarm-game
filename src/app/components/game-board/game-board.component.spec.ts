@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { MockBuilder, MockedComponentFixture, MockRender, ngMocks } from 'ng-mocks';
+import { MockBuilder, MockedComponentFixture, MockRender, MockService, ngMocks } from 'ng-mocks';
 import { of } from 'rxjs';
 import { BeeType } from '../../enums/bee-type';
 import { GameBoardService } from '../../services/game-board.service';
@@ -15,18 +15,15 @@ describe('GameBoardComponent', () => {
   ];
 
   let fixture: MockedComponentFixture;
-  const gameBoardServiceMock = {
-    getData: () => of([]),
-    beesSignal: signal([]),
-    targetBeeSignal: signal(undefined),
-    playerNameSignal: signal(''),
-    hitRandomBee: () => {},
-    resetBoard: () => of([]),
-  };
+  const gameBoardServiceMock = MockService(GameBoardService);
 
   beforeEach(async () => {
+    spyOn(gameBoardServiceMock, 'getData').and.returnValue(of(bees));
     spyOn(gameBoardServiceMock, 'hitRandomBee').and.callThrough();
-    spyOn(gameBoardServiceMock, 'resetBoard').and.callThrough();
+    spyOn(gameBoardServiceMock, 'resetBoard').and.returnValue(of(bees));
+    spyOnProperty(gameBoardServiceMock, 'playerNameSignal', 'get').and.returnValue(signal(''));
+    spyOnProperty(gameBoardServiceMock, 'beesSignal', 'get').and.returnValue(signal([]));
+    spyOnProperty(gameBoardServiceMock, 'targetBeeSignal', 'get').and.returnValue(signal(undefined));
     await MockBuilder(GameBoardComponent).mock(HiveComponent).mock(GameBoardService, gameBoardServiceMock);
     fixture = MockRender(GameBoardComponent);
   });
