@@ -17,19 +17,14 @@ describe('GameBoardService', () => {
     { type: BeeType.Drone, health: 50, damage: 12 },
   ];
   let service: GameBoardService;
-  const beesServiceMock = MockService(BeesService, {
-    getBees: () => of(bees),
-  });
+  const beesServiceMock = MockService(BeesService);
 
-  const localStorageServiceMock = MockService(LocalStorageService, {
-    setBees: () => {},
-    setPlayerName: () => {},
-  });
+  const localStorageServiceMock = MockService(LocalStorageService);
 
   const utilsMock = MockService(Utils);
 
   beforeEach(async () => {
-    spyOn(beesServiceMock, 'getBees').and.callThrough();
+    spyOn(beesServiceMock, 'getBees').and.returnValue(of(bees));
     spyOn(localStorageServiceMock, 'setBees').and.callThrough();
     spyOn(localStorageServiceMock, 'setTargetBee').and.callThrough();
     spyOn(localStorageServiceMock, 'setPlayerName').and.callThrough();
