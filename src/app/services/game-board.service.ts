@@ -35,6 +35,13 @@ export class GameBoardService {
     this._playerNameSignal.set(this.localStorageService.getPlayerName());
   }
 
+  /**
+   * Retrieves bee data, either from cache or by fetching from the bees service.
+   *
+   * @returns An observable containing the bee data. If data is available in cache
+   *          (indicated by `this.beesSignal()`), returns the cached data as an observable.
+   *          Otherwise, it fetches data from `beesService.getBees()` and caches it.
+   */
   getData() {
     if (this.beesSignal()) {
       return of(this.beesSignal());
@@ -48,14 +55,23 @@ export class GameBoardService {
     );
   }
 
+  /**
+   * Sets the player's name and stores it in local storage.
+   *
+   * @param value - The player's name to be set.
+   */
   setPlayerName(value: string) {
     this._playerNameSignal.set(value);
     this.localStorageService.setPlayerName(value);
   }
 
+  /**
+   * Hits a random bee from the list and updates the bee data accordingly.
+   */
   hitRandomBee() {
-    const bees = this._beesSignal();
-    if (!bees) return;
+    const bees = this.beesSignal();
+
+    if (!bees?.length) return;
 
     const targetBee = this.utils.getRandomItem(bees);
     this._targetBeeSignal.set(targetBee);
@@ -66,6 +82,12 @@ export class GameBoardService {
     this.localStorageService.setBees(updatedBees);
   }
 
+  /**
+   * Resets the game board by clearing the target bee and bee signals,
+   * and then reinitializing the data.
+   *
+   * @returns The observable returned by `getData()` after resetting the board.
+   */
   resetBoard() {
     this._targetBeeSignal.set(undefined);
     this._beesSignal.set(undefined);
