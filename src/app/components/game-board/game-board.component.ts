@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, Signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Bee } from '../../models/bee.model';
 import { GameBoardService } from '../../services/game-board.service';
@@ -12,7 +12,7 @@ import { HiveComponent } from '../hive/hive.component';
   styleUrl: './game-board.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GameBoardComponent {
+export class GameBoardComponent implements OnInit {
   beesSignal: Signal<Bee[] | undefined>;
   targetBeeSignal: Signal<Bee | undefined>;
   playerNameSignal: Signal<string | undefined>;

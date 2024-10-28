@@ -1,10 +1,10 @@
 import { signal } from '@angular/core';
 import { MockBuilder, MockedComponentFixture, MockRender, ngMocks } from 'ng-mocks';
 import { of } from 'rxjs';
+import { BeeType } from '../../enums/bee-type';
 import { GameBoardService } from '../../services/game-board.service';
 import { HiveComponent } from '../hive/hive.component';
 import { GameBoardComponent } from './game-board.component';
-import { BeeType } from '../../enums/bee-type';
 
 describe('GameBoardComponent', () => {
   const bees = [

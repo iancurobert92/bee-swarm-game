@@ -12,8 +12,8 @@ import { GameBoardService } from './services/game-board.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  playerName: string = '';
-  isLoggedIn: boolean = false;
+  playerName = '';
+  isLoggedIn = false;
 
   private gameBoardService = inject(GameBoardService);
 

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, of, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Bee } from '../models/bee.model';
 
 @Injectable({
